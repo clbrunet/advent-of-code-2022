@@ -13,24 +13,19 @@ fn get_priority(ch: char) -> u32 {
 pub fn part_1(input: &str) {
     let sum = input.lines().fold(0, |accum, line| {
         let (first, second) = line.split_at(line.len() / 2);
-        for ch in first.chars() {
-            if second.find(ch).is_some() {
-                return accum + get_priority(ch);
-            }
-        }
-        accum
+        let ch = first.chars().find(|&ch| second.contains(ch)).unwrap();
+        accum + get_priority(ch)
     });
     println!("Part 1 : {sum}");
 }
 
 pub fn part_2(input: &str) {
     let sum = input.lines().array_chunks().fold(0, |accum, [a, b, c]| {
-        for ch in a.chars() {
-            if b.find(ch).is_some() && c.find(ch).is_some() {
-                return accum + get_priority(ch);
-            }
-        }
-        accum
+        let ch = a
+            .chars()
+            .find(|&ch| b.contains(ch) && c.contains(ch))
+            .unwrap();
+        accum + get_priority(ch)
     });
     println!("Part 2 : {sum}");
 }
