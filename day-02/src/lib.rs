@@ -68,13 +68,13 @@ impl Shape {
     }
 }
 
-pub fn part_1(input: &str) {
+pub fn part_1(input: &str) -> String {
     let score = input.lines().fold(0, |accum, line| {
         let opponent = Shape::new(line.chars().nth(0).unwrap());
         let me = Shape::new(line.chars().nth(2).unwrap());
         accum + me.get_shape_score() + me.get_outcome_score(&opponent)
     });
-    println!("Part 1 : {}", score);
+    score.to_string()
 }
 
 #[derive(Debug)]
@@ -102,7 +102,7 @@ impl RoundResult {
     }
 }
 
-pub fn part_2(input: &str) {
+pub fn part_2(input: &str) -> String {
     let score = input.lines().fold(0, |accum, line| {
         let opponent = Shape::new(line.chars().nth(0).unwrap());
         let round_result = RoundResult::new(line.chars().nth(2).unwrap());
@@ -110,5 +110,24 @@ pub fn part_2(input: &str) {
             + opponent.get_response(&round_result).get_shape_score()
             + round_result.get_outcome_score()
     });
-    println!("Part 2 : {}", score);
+    score.to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const INPUT: &str = "A Y
+B X
+C Z";
+
+    #[test]
+    fn part_1_works() {
+        assert_eq!(part_1(INPUT), "15");
+    }
+
+    #[test]
+    fn part_2_works() {
+        assert_eq!(part_2(INPUT), "12");
+    }
 }
