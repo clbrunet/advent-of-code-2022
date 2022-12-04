@@ -1,21 +1,29 @@
 use std::ops::RangeInclusive;
 
+fn parse_range(range: &str) -> RangeInclusive<u32> {
+    let mut bounds = range
+        .split('-')
+        .map(|bound| bound.parse::<u32>().unwrap())
+        .collect::<Vec<u32>>();
+    let start = bounds.remove(0);
+    let end = bounds.remove(0);
+    start..=end
+}
+
+fn parse_ranges(line: &str) -> (RangeInclusive<u32>, RangeInclusive<u32>) {
+    let mut ranges = line.split(',').collect::<Vec<&str>>();
+    let first = ranges.remove(0);
+    let second = ranges.remove(0);
+    (parse_range(first), parse_range(second))
+}
+
 pub fn part_1(input: &str) -> String {
     let count = input
         .lines()
         .filter(|&line| {
-            let ranges = line
-                .split(',')
-                .map(|str_range| {
-                    let mut iter = str_range.split('-');
-                    let start = iter.next().unwrap().parse::<u32>().unwrap();
-                    let end = iter.next().unwrap().parse::<u32>().unwrap();
-                    start..=end
-                })
-                .collect::<Vec<RangeInclusive<u32>>>();
-            let first = ranges[0].to_owned();
-            let mut second = ranges[1].to_owned();
-            first.clone().all(|n| second.contains(&n)) || second.all(|n| first.contains(&n))
+            let (first, second) = parse_ranges(line);
+            (first.contains(second.start()) && first.contains(second.end()))
+                || (second.contains(first.start()) && second.contains(first.end()))
         })
         .count();
     count.to_string()
@@ -25,17 +33,7 @@ pub fn part_2(input: &str) -> String {
     let count = input
         .lines()
         .filter(|&line| {
-            let ranges = line
-                .split(',')
-                .map(|str_range| {
-                    let mut iter = str_range.split('-');
-                    let start = iter.next().unwrap().parse::<u32>().unwrap();
-                    let end = iter.next().unwrap().parse::<u32>().unwrap();
-                    start..=end
-                })
-                .collect::<Vec<RangeInclusive<u32>>>();
-            let mut first = ranges[0].to_owned();
-            let second = ranges[1].to_owned();
+            let (mut first, second) = parse_ranges(line);
             first.any(|n| second.contains(&n))
         })
         .count();
