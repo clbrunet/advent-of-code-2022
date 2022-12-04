@@ -50,67 +50,65 @@ impl Shape {
     fn get_response(&self, round_result: &RoundResult) -> Self {
         match self {
             Self::Rock => match round_result {
-                RoundResult::LOSE => Self::Scissors,
-                RoundResult::DRAW => Self::Rock,
-                RoundResult::WIN => Self::Paper,
+                RoundResult::Lose => Self::Scissors,
+                RoundResult::Draw => Self::Rock,
+                RoundResult::Win => Self::Paper,
             },
             Self::Paper => match round_result {
-                RoundResult::LOSE => Self::Rock,
-                RoundResult::DRAW => Self::Paper,
-                RoundResult::WIN => Self::Scissors,
+                RoundResult::Lose => Self::Rock,
+                RoundResult::Draw => Self::Paper,
+                RoundResult::Win => Self::Scissors,
             },
             Self::Scissors => match round_result {
-                RoundResult::LOSE => Self::Paper,
-                RoundResult::DRAW => Self::Scissors,
-                RoundResult::WIN => Self::Rock,
+                RoundResult::Lose => Self::Paper,
+                RoundResult::Draw => Self::Scissors,
+                RoundResult::Win => Self::Rock,
             },
         }
     }
 }
 
 pub fn part_1(input: &str) {
-    let mut score = 0;
-    for line in input.lines() {
+    let score = input.lines().fold(0, |accum, line| {
         let opponent = Shape::new(line.chars().nth(0).unwrap());
         let me = Shape::new(line.chars().nth(2).unwrap());
-        score += me.get_shape_score();
-        score += me.get_outcome_score(&opponent);
-    }
+        accum + me.get_shape_score() + me.get_outcome_score(&opponent)
+    });
     println!("Part 1 : {}", score);
 }
 
 #[derive(Debug)]
 enum RoundResult {
-    LOSE,
-    DRAW,
-    WIN,
+    Lose,
+    Draw,
+    Win,
 }
 impl RoundResult {
     fn new(char: char) -> Self {
         match char {
-            'X' => Self::LOSE,
-            'Y' => Self::DRAW,
-            'Z' => Self::WIN,
+            'X' => Self::Lose,
+            'Y' => Self::Draw,
+            'Z' => Self::Win,
             _ => panic!(),
         }
     }
 
     fn get_outcome_score(&self) -> u32 {
         match self {
-            Self::LOSE => LOSE_SCORE,
-            Self::DRAW => DRAW_SCORE,
-            Self::WIN => WIN_SCORE,
+            Self::Lose => LOSE_SCORE,
+            Self::Draw => DRAW_SCORE,
+            Self::Win => WIN_SCORE,
         }
     }
 }
 
 pub fn part_2(input: &str) {
-    let mut score = 0;
-    for line in input.lines() {
+    let score = input.lines().fold(0, |accum, line| {
         let opponent = Shape::new(line.chars().nth(0).unwrap());
         let round_result = RoundResult::new(line.chars().nth(2).unwrap());
-        score += opponent.get_response(&round_result).get_shape_score();
-        score += round_result.get_outcome_score();
-    }
+        accum
+            + opponent.get_response(&round_result).get_shape_score()
+            + round_result.get_outcome_score()
+    });
     println!("Part 2 : {}", score);
 }
