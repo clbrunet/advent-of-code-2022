@@ -121,7 +121,8 @@ mod tests {
 
     const INPUT: &str = "A Y
 B X
-C Z";
+C Z
+";
 
     #[test]
     fn part_1_works() {
