@@ -20,7 +20,8 @@ pub fn part_2(input: &str) {
                 .lines()
                 .map(|line| line.parse::<u32>().unwrap())
                 .sum::<u32>()
-        }).collect::<Vec<u32>>();
+        })
+        .collect::<Vec<u32>>();
     totals.sort_unstable_by(|a, b| b.cmp(a));
     let sum = totals.iter().take(3).sum::<u32>();
     println!("Part 2 : {}", sum);
