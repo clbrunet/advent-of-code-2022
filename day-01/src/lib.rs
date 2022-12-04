@@ -1,4 +1,4 @@
-pub fn part_1(input: &str) {
+pub fn part_1(input: &str) -> String {
     let max = input
         .split("\n\n")
         .map(|group| {
@@ -9,10 +9,10 @@ pub fn part_1(input: &str) {
         })
         .max()
         .unwrap();
-    println!("Part 1 : {}", max);
+    max.to_string()
 }
 
-pub fn part_2(input: &str) {
+pub fn part_2(input: &str) -> String {
     let mut totals = input
         .split("\n\n")
         .map(|group| {
@@ -24,5 +24,35 @@ pub fn part_2(input: &str) {
         .collect::<Vec<u32>>();
     totals.sort_unstable_by(|a, b| b.cmp(a));
     let sum = totals.iter().take(3).sum::<u32>();
-    println!("Part 2 : {}", sum);
+    sum.to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const INPUT: &str = "1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000";
+
+    #[test]
+    fn part_1_works() {
+        assert_eq!(part_1(INPUT), "24000");
+    }
+
+    #[test]
+    fn part_2_works() {
+        assert_eq!(part_2(INPUT), "45000");
+    }
 }
