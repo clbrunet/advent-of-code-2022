@@ -70,6 +70,7 @@ impl Shape {
 
 pub fn part_1(input: &str) -> String {
     let score = input.lines().fold(0, |accum, line| {
+        #[allow(clippy::iter_nth_zero)]
         let opponent = Shape::new(line.chars().nth(0).unwrap());
         let me = Shape::new(line.chars().nth(2).unwrap());
         accum + me.get_shape_score() + me.get_outcome_score(&opponent)
@@ -104,6 +105,7 @@ impl RoundResult {
 
 pub fn part_2(input: &str) -> String {
     let score = input.lines().fold(0, |accum, line| {
+        #[allow(clippy::iter_nth_zero)]
         let opponent = Shape::new(line.chars().nth(0).unwrap());
         let round_result = RoundResult::new(line.chars().nth(2).unwrap());
         accum
