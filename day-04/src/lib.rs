@@ -1,19 +1,13 @@
 use std::ops::RangeInclusive;
 
 fn parse_range(range: &str) -> RangeInclusive<u32> {
-    let mut bounds = range
-        .split('-')
-        .map(|bound| bound.parse::<u32>().unwrap())
-        .collect::<Vec<u32>>();
-    let start = bounds.remove(0);
-    let end = bounds.remove(0);
-    start..=end
+    let (start, end) = range
+        .split_once('-').unwrap();
+    start.parse().unwrap()..=end.parse().unwrap()
 }
 
 fn parse_ranges(line: &str) -> (RangeInclusive<u32>, RangeInclusive<u32>) {
-    let mut ranges = line.split(',').collect::<Vec<&str>>();
-    let first = ranges.remove(0);
-    let second = ranges.remove(0);
+    let (first, second) = line.split_once(',').unwrap();
     (parse_range(first), parse_range(second))
 }
 
