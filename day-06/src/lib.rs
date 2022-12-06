@@ -1,20 +1,14 @@
-fn contains_duplicate(chs: &[char]) -> bool {
-    for (j, ch) in chs.iter().enumerate() {
-        if chs[(j + 1)..].contains(ch) {
-            return true;
-        }
-    }
-    false
-}
+use std::collections::HashSet;
 
 fn get_marker_end(signal: &str, len: usize) -> String {
     let chs = signal.trim().chars().collect::<Vec<_>>();
-    for i in len..chs.len() {
-        if !contains_duplicate(&chs[(i - len)..i]) {
-            return i.to_string();
-        }
-    }
-    "".into()
+    let i = chs
+        .windows(len)
+        .enumerate()
+        .find(|&(_, chs)| len == chs.iter().collect::<HashSet<_>>().len())
+        .unwrap()
+        .0;
+    (i + len).to_string()
 }
 
 pub fn part_1(input: &str) -> String {
