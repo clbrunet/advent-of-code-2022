@@ -23,24 +23,35 @@ fn get_stacks(input_stacks: &str) -> Vec<Vec<char>> {
     }
     stacks
 }
+struct Rearrangement {
+    quantity: usize,
+    from: usize,
+    to: usize,
+}
 
-const QUANTITY_WORD_INDEX: usize = 1;
-const FROM_WORD_INDEX: usize = 3;
-const TO_WORD_INDEX: usize = 5;
+impl Rearrangement {
+    fn new(line: &str) -> Self {
+        const QUANTITY_WORD_INDEX: usize = 1;
+        const FROM_WORD_INDEX: usize = 3;
+        const TO_WORD_INDEX: usize = 5;
+
+        let words = line.split_whitespace().collect::<Vec<&str>>();
+        Self {
+            quantity: words[QUANTITY_WORD_INDEX].parse::<usize>().unwrap(),
+            from: words[FROM_WORD_INDEX].parse::<usize>().unwrap() - 1,
+            to: words[TO_WORD_INDEX].parse::<usize>().unwrap() - 1,
+        }
+    }
+}
 
 pub fn part_1(input: &str) -> String {
     let (input_stacks, rearrangements) = input.split_once("\n\n").unwrap();
     let mut stacks = get_stacks(input_stacks);
     for line in rearrangements.lines() {
-        let words = line.split_whitespace().collect::<Vec<&str>>();
-        let (quantity, from, to) = (
-            words[QUANTITY_WORD_INDEX].parse::<u32>().unwrap(),
-            words[FROM_WORD_INDEX].parse::<usize>().unwrap() - 1,
-            words[TO_WORD_INDEX].parse::<usize>().unwrap() - 1,
-        );
-        for _ in 0..quantity {
-            let ch = stacks[from].pop().unwrap();
-            stacks[to].push(ch);
+        let rearrangement = Rearrangement::new(line);
+        for _ in 0..rearrangement.quantity {
+            let ch = stacks[rearrangement.from].pop().unwrap();
+            stacks[rearrangement.to].push(ch);
         }
     }
     let result = stacks
@@ -54,15 +65,10 @@ pub fn part_2(input: &str) -> String {
     let (input_stacks, rearrangements) = input.split_once("\n\n").unwrap();
     let mut stacks = get_stacks(input_stacks);
     for line in rearrangements.lines() {
-        let words = line.split_whitespace().collect::<Vec<&str>>();
-        let (quantity, from, to) = (
-            words[QUANTITY_WORD_INDEX].parse::<usize>().unwrap(),
-            words[FROM_WORD_INDEX].parse::<usize>().unwrap() - 1,
-            words[TO_WORD_INDEX].parse::<usize>().unwrap() - 1,
-        );
-        let len = stacks[from].len();
-        let mut off = stacks[from].split_off(len - quantity);
-        stacks[to].append(&mut off);
+        let rearrangement = Rearrangement::new(line);
+        let len = stacks[rearrangement.from].len();
+        let mut off = stacks[rearrangement.from].split_off(len - rearrangement.quantity);
+        stacks[rearrangement.to].append(&mut off);
     }
     let result = stacks
         .iter()
@@ -78,7 +84,7 @@ mod tests {
     const INPUT: &str = "    [D]    
 [N] [C]    
 [Z] [M] [P]
- 1   2   3 
+1   2   3 
 
 move 1 from 2 to 1
 move 3 from 1 to 3
